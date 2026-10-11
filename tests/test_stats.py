@@ -20,9 +20,8 @@ class FixtureClient:
         self.queries = []
         self.payload = None
 
-    def commit_count(self, query):
-        self.queries.append(query)
-        return self.private if "is:private" in query else 65
+    def owned_commit_counts(self, username):
+        return 65, self.private
 
     def request(self, path, payload=None):
         if path == "/user":
@@ -56,12 +55,40 @@ class StatsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "profile owner"):
             stats.collect(FixtureClient(login="other-user"), "devmxlx", NOW)
 
-    def test_incomplete_search_rejected(self):
+    def test_owned_count_filters_author_owner_and_forks(self):
         class Client(stats.GitHub):
+            def paged(self, path):
+                if path.startswith('/user/repos'):
+                    return iter([
+                        {"owner":{"login":"devmxlx"},"full_name":"devmxlx/private-fixture","fork":False,"private":True},
+                        {"owner":{"login":"devmxlx"},"full_name":"devmxlx/public-fixture","fork":False,"private":False},
+                        {"owner":{"login":"devmxlx"},"full_name":"devmxlx/fork","fork":True,"private":True},
+                        {"owner":{"login":"other-user"},"full_name":"other-user/repo","fork":False,"private":True},
+                    ])
+                own = 62 if 'private-fixture' in path else 3
+                return iter([{"login":"devmxlx","contributions":own}, {"login":"other-user","contributions":1000}])
+        self.assertEqual(Client("fixture").owned_commit_counts("devmxlx"), (65, 62))
+
+    def test_pagination_collects_second_page_and_empty_response(self):
+        class Client(stats.GitHub):
+            def request(self, path, payload=None):
+                if path.endswith('page=1'):
+                    return list(range(100))
+                return [100]
+        self.assertEqual(list(Client("fixture").paged('/user/repos?affiliation=owner')), list(range(101)))
+        class Empty(stats.GitHub):
             def request(self, *args, **kwargs):
-                return {"total_count": 1, "incomplete_results": True}
-        with self.assertRaisesRegex(ValueError, "incomplete"):
-            Client("test-fixture").commit_count("author:devmxlx")
+                return []
+        self.assertEqual(list(Empty("fixture").paged('/repos/fixture/empty/contributors')), [])
+
+    def test_invalid_contributor_count_rejected(self):
+        class Client(stats.GitHub):
+            def paged(self, path):
+                if path.startswith('/user/repos'):
+                    return iter([{"owner":{"login":"devmxlx"},"full_name":"devmxlx/fixture","fork":False,"private":True}])
+                return iter([{"login":"devmxlx","contributions":-1}])
+        with self.assertRaisesRegex(ValueError, 'invalid contributor'):
+            Client("fixture").owned_commit_counts("devmxlx")
 
     def test_public_files_drop_unexpected_fields(self):
         data = stats.collect(FixtureClient(), "devmxlx", NOW)
@@ -82,7 +109,6 @@ class StatsTests(unittest.TestCase):
         now = datetime(2026, 12, 31, 23, 30, tzinfo=timezone.utc)
         data = stats.collect(client, "devmxlx", now)
         self.assertEqual(data["year"], 2027)
-        self.assertIn("author-date:2027-01-01..2027-12-31", client.queries[0])
         variables = client.payload["variables"]
         start = datetime.fromisoformat(variables["from"])
         self.assertLess(start, now)

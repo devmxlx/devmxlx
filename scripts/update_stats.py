@@ -9,13 +9,13 @@ from pathlib import Path
 import re
 import sys
 from urllib.error import HTTPError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PUBLISHED_FIELDS = {"username", "year", "commits", "private_commits", "contributions", "updated_on", "calendar"}
+PUBLISHED_FIELDS = {"username", "year", "commits", "private_commits", "contributions", "updated_on", "calendar", "commits_scope"}
 LEVELS = {"NONE": 0, "FIRST_QUARTILE": 1, "SECOND_QUARTILE": 2, "THIRD_QUARTILE": 3, "FOURTH_QUARTILE": 4}
 
 
@@ -39,18 +39,43 @@ class GitHub:
         )
         try:
             with urlopen(request, timeout=30) as response:
+                if response.status == 204:
+                    return []
                 return json.load(response)
         except HTTPError as error:
             raise ValueError(f"GitHub API returned HTTP {error.code}; check token access and rate limits") from None
 
-    def commit_count(self, query):
-        result = self.request("/search/commits?" + urlencode({"q": query, "per_page": 1}))
-        if result.get("incomplete_results") is not False:
-            raise ValueError("GitHub returned incomplete search results; keeping the previous snapshot")
-        count = result.get("total_count")
-        if type(count) is not int or count < 0:
-            raise ValueError("GitHub returned an invalid commit count")
-        return count
+    def paged(self, path):
+        # Build pagination locally rather than forwarding credentials to a Link URL.
+        separator = "&" if "?" in path else "?"
+        for page in range(1, 101):
+            entries = self.request(path + separator + urlencode({"per_page": 100, "page": page}))
+            if not isinstance(entries, list):
+                raise ValueError("GitHub returned an invalid paginated response")
+            yield from entries
+            if len(entries) < 100:
+                return
+        raise ValueError("GitHub pagination exceeded the supported limit; keeping the previous snapshot")
+
+    def owned_commit_counts(self, username):
+        commits = private_commits = 0
+        for repo in self.paged("/user/repos?affiliation=owner"):
+            if repo["owner"]["login"].lower() != username.lower() or repo["fork"]:
+                continue
+            # Metadata-read endpoint: no source-code or commit-message access needed.
+            path = "/repos/" + quote(repo["full_name"], safe="/") + "/contributors"
+            own = 0
+            for contributor in self.paged(path):
+                if contributor.get("login", "").lower() != username.lower():
+                    continue
+                count = contributor["contributions"]
+                if type(count) is not int or count < 0:
+                    raise ValueError("GitHub returned an invalid contributor commit count")
+                own += count
+            commits += own
+            if repo["private"]:
+                private_commits += own
+        return commits, private_commits
 
 
 def collect(client, username, now):
@@ -60,13 +85,11 @@ def collect(client, username, now):
         raise ValueError("The statistics token must belong to the profile owner")
 
     year = now.astimezone(ZoneInfo("Europe/Berlin")).year
-    query = f"author:{username} author-date:{year}-01-01..{year}-12-31"
-    commits = client.commit_count(query)
-    private_commits = client.commit_count(query + " is:private")
+    commits, private_commits = client.owned_commit_counts(username)
     if private_commits <= 0:
         raise ValueError("No private commits are visible; check the token's repository access before publishing")
     if private_commits > commits:
-        raise ValueError("GitHub search counts changed during retrieval; retry the update")
+        raise ValueError("GitHub returned inconsistent commit counts; keeping the previous snapshot")
 
     response = client.request("/graphql", {
         "query": """query($login: String!, $from: DateTime!, $to: DateTime!) {
@@ -106,14 +129,24 @@ def collect(client, username, now):
         "year": year,
         "commits": commits,
         "private_commits": private_commits,
+        "commits_scope": "owned_nonfork_repositories_all_time",
         "contributions": sum(day["count"] for day in days),
         "updated_on": now.astimezone(ZoneInfo("Europe/Berlin")).date().isoformat(),
         "calendar": days,
     }
 
 
+def brand_mark(x, y, size=36, fill="#aaff5f"):
+    # The pixel asterisk used by mxlx.studio, recreated as native SVG geometry.
+    rows = [[4], [1, 4, 7], [2, 4, 6], [3, 4, 5], list(range(9)),
+            [3, 4, 5], [2, 4, 6], [1, 4, 7], [4]]
+    cells = "".join(f'<rect x="{col}" y="{row}" width="1" height="1"/>'
+                    for row, columns in enumerate(rows) for col in columns)
+    return f'<g transform="translate({x} {y}) scale({size / 9})" fill="{fill}" shape-rendering="crispEdges">{cells}</g>'
+
+
 def render(data):
-    colors = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"]
+    colors = ["#e2e2e2", "#d4edbf", "#abd884", "#76b848", "#aaff5f"]
     cells = []
     labels = []
     first = datetime.strptime(data["calendar"][0]["date"], "%Y-%m-%d") if data["calendar"] else None
@@ -122,39 +155,42 @@ def render(data):
     for index, day in enumerate(data["calendar"]):
         position = index + offset
         column, row = position // 7, position % 7
-        x, y = 74 + column * 19, 267 + row * 17
+        x, y = 80 + column * 19, 292 + row * 19
         value = datetime.strptime(day["date"], "%Y-%m-%d")
         if value.month != previous_month:
-            labels.append(f'<text x="{x}" y="253">{value.strftime("%b")}</text>')
+            labels.append(f'<text x="{x}" y="277">{value.strftime("%b")}</text>')
             previous_month = value.month
         cells.append(
-            f'<rect x="{x}" y="{y}" width="14" height="13" rx="3" fill="{colors[day["level"]]}">'
+            f'<rect x="{x}" y="{y}" width="14" height="14" rx="2" fill="{colors[day["level"]]}">'
             f'<title>{escape(day["date"])}: {day["count"]} contributions</title></rect>'
         )
     username = escape(data["username"])
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480" role="img" aria-labelledby="title desc">
   <title id="title">{username}'s GitHub activity in {data['year']}</title>
-  <desc id="desc">{data['commits']:,} authored commits, including {data['private_commits']:,} private commits, and {data['contributions']:,} contributions. Snapshot from {escape(data['updated_on'])}.</desc>
-  <rect x="1" y="1" width="1198" height="428" rx="16" fill="#0d1117" stroke="#28363b"/>
-  <g font-family="Arial, Helvetica, sans-serif">
-    <text x="32" y="45" fill="#a4b9b0" font-size="14" letter-spacing="3">GITHUB / ACTIVITY {data['year']}</text>
-    <text x="1020" y="45" fill="#80ed99" font-size="14">PRIVATE INCLUDED</text>
-    <rect x="32" y="67" width="553" height="127" rx="10" fill="#10191e" stroke="#28363b"/>
-    <rect x="605" y="67" width="563" height="127" rx="10" fill="#10191e" stroke="#28363b"/>
-    <text x="55" y="96" fill="#a4b9b0" font-size="17">AUTHORED COMMITS</text>
-    <text x="55" y="149" fill="#e6edf3" font-size="49" font-weight="700">{data['commits']:,}</text>
-    <text x="55" y="177" fill="#90a4a1" font-size="15">including {data['private_commits']:,} in private repositories</text>
-    <text x="628" y="96" fill="#a4b9b0" font-size="17">CONTRIBUTIONS</text>
-    <text x="628" y="149" fill="#e6edf3" font-size="49" font-weight="700">{data['contributions']:,}</text>
-    <text x="628" y="177" fill="#90a4a1" font-size="15">GitHub contribution calendar · public + private</text>
-    <text x="32" y="232" fill="#e6edf3" font-size="16">A year of activity</text>
-    <g fill="#90a4a1" font-size="12">{''.join(labels)}
-      <text x="32" y="297">Mon</text><text x="32" y="331">Wed</text><text x="32" y="365">Fri</text>
+  <desc id="desc">{data['commits']:,} authored commits in owned non-fork repositories, all time, including {data['private_commits']:,} private commits. {data['contributions']:,} contributions in {data['year']}. Snapshot from {escape(data['updated_on'])}.</desc>
+  <rect width="1200" height="480" rx="18" fill="#f5f5f5"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#111111">
+    <text x="32" y="43" fill="#777777" font-size="16">/003</text>
+    <text x="87" y="43" font-size="22" font-weight="600" letter-spacing="-.7">GitHub activity</text>
+    <rect x="952" y="21" width="153" height="32" rx="16" fill="#aaff5f"/>
+    <text x="974" y="42" font-size="14" font-weight="600">Private included</text>
+    {brand_mark(1133, 21, 32, '#111111')}
+    <path d="M32 68 H1168 M595 91 V207" stroke="#d8d8d8"/>
+    <text x="32" y="106" fill="#666666" font-size="16">Authored commits · all time</text>
+    <text x="29" y="171" font-size="65" font-weight="600" letter-spacing="-3">{data['commits']:,}</text>
+    <text x="32" y="202" fill="#666666" font-size="16">{data['private_commits']:,} private · owned repositories</text>
+    <text x="627" y="106" fill="#666666" font-size="16">Contributions · {data['year']}</text>
+    <text x="624" y="171" font-size="65" font-weight="600" letter-spacing="-3">{data['contributions']:,}</text>
+    <text x="627" y="202" fill="#666666" font-size="16">GitHub calendar · public + private</text>
+    <path d="M32 227 H1168" stroke="#d8d8d8"/>
+    <text x="32" y="253" font-size="16" font-weight="600">A year of activity.</text>
+    <g fill="#777777" font-size="13">{''.join(labels)}
+      <text x="32" y="323">Mon</text><text x="32" y="361">Wed</text><text x="32" y="399">Fri</text>
     </g>
     {''.join(cells)}
-    <path d="M32 395 H1168" stroke="#28363b"/>
-    <text x="32" y="417" fill="#90a4a1" font-size="12">Source: GitHub API · Aggregate values only · Counts may include automated activity</text>
-    <text x="981" y="417" fill="#90a4a1" font-size="12">Updated {escape(data['updated_on'])}</text>
+    <path d="M32 439 H1168" stroke="#d8d8d8"/>
+    <text x="32" y="463" fill="#777777" font-size="12">GitHub API · Aggregate values only · May include automated activity</text>
+    <text x="982" y="463" fill="#777777" font-size="12">Updated {escape(data['updated_on'])}</text>
   </g>
 </svg>'''
 

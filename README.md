@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/header.svg" alt="Milo — full-stack developer from Germany. From idea to live product." width="100%" />
+  <img src="./assets/header.svg" alt="Milo Kopper — developer and founder of Mxlx. Design meets code. mxlx.studio." width="100%" />
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://mxlx.tech"><strong>Explore my portfolio ↗</strong></a>
+  <a href="https://mxlx.studio"><strong>Explore Mxlx — my studio & portfolio ↗</strong></a>
 </p>
 
 ---
@@ -22,6 +22,8 @@
 
 I'm a **developer from Germany** who designs and builds custom websites and web apps. I work across the whole product: the interface people use, the backend behind it, the data it depends on, and the deployment that brings everything online.
 
+I'm also the founder of **[Mxlx](https://mxlx.studio)**, my digital agency. The studio brings together web design, UI/UX, branding, prototyping and the work that keeps a website useful after launch.
+
 I enjoy taking an idea through to something people can actually use. My approach combines visual design with hands-on engineering, and I build my projects from concept to deployment.
 
 ```typescript
@@ -29,6 +31,7 @@ type Developer = {
   name: string;
   handle: string;
   basedIn: string;
+  studio: string;
   builds: readonly string[];
   coreStack: readonly string[];
   openTo: readonly string[];
@@ -36,13 +39,14 @@ type Developer = {
 };
 
 const milo = {
-  name: "Milo",
+  name: "Milo Kopper",
   handle: "devmxlx",
   basedIn: "Germany",
+  studio: "Mxlx — Digital Agency",
   builds: ["custom websites", "web apps", "full-stack products"],
   coreStack: ["TypeScript", "Next.js", "React", "Tailwind", "Supabase", "Vercel"],
   openTo: ["freelance projects", "collaborations"],
-  portfolio: "https://mxlx.tech",
+  portfolio: "https://mxlx.studio",
 } as const satisfies Developer;
 ```
 
@@ -93,7 +97,14 @@ I choose tools around the requirements of a project: the interface, the data, th
 
 ### Selected work
 
-**[mxlx.tech ↗](https://mxlx.tech)** is the place to explore my work and the websites and web apps I build.
+**[mxlx.studio ↗](https://mxlx.studio)** is the place to explore my agency, selected work and the websites and web apps I build.
+
+| Case study | Focus |
+| :--- | :--- |
+| **[M.D. Alltagsunterstützung](https://mxlx.studio/cases/md-alltagsunterstuetzung)** | Local services |
+| **[ABICRACK](https://mxlx.studio/cases/abicrack)** | Education |
+| **[Yùyàn](https://mxlx.studio/cases/yuyan)** | Hospitality |
+| **[VAULT](https://mxlx.studio/cases/vault)** | Social gaming |
 
 Some of my development happens in private repositories. The activity section below includes aggregate private statistics while keeping those repositories and their contents private.
 
@@ -163,10 +174,10 @@ This is an overview of the layers I work across; the details depend on the appli
 
 <br />
 
-- **Commits** are authored commits indexed by GitHub's commit search for the displayed calendar year, in repositories available to the statistics token.
-- **Contributions** come from GitHub's contribution calendar for that same year. They can also include pull requests, issues, reviews and other eligible activity.
+- **Commits** are GitHub's contributor commit counts for my own non-fork repositories, across their full history. Only commits attributed to my account are summed. Public and private repositories are included; work in repositories owned by other accounts is outside this counter.
+- **Contributions** come from GitHub's contribution calendar for the displayed year. They can also include pull requests, issues, reviews and other eligible activity.
 - **Private activity** is included in the aggregate values. Repository names, commit messages, source code and credentials are not part of the published statistics files.
-- The numbers follow GitHub's indexing and contribution rules, so commits and contributions can differ. The graph can include automated activity.
+- GitHub caches contributor counts, which can lag recent commits by a few hours. The two counters have different scopes and are not added together. The graph can include automated activity.
 - The date on the card shows when the snapshot was generated. The updater is maintained in this profile repository.
 
 </details>
@@ -178,7 +189,9 @@ I'm open to **freelance projects and collaborations**, especially custom website
 
 | Find me | Link |
 | :--- | :--- |
-| **Portfolio** | [mxlx.tech](https://mxlx.tech) |
+| **Studio & portfolio** | [mxlx.studio](https://mxlx.studio) |
+| **Project enquiries** | [Start a project](https://mxlx.studio/contact) |
+| **Business email** | [info@mxlx.studio](mailto:info@mxlx.studio) |
 | **GitHub** | [@devmxlx](https://github.com/devmxlx) |
 
 <br />
