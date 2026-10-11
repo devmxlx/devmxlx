@@ -13,11 +13,11 @@
           <text x="53" y="131" font-size="18" font-weight="600">HTML</text>
           <text x="1168" y="131" font-size="17" text-anchor="end">92.8%</text>
           <rect x="32" y="145" width="1136" height="7" rx="3.5" fill="#e2e2e2"/>
-          <rect x="32" y="145" width="1053.77" height="7" rx="3.5" fill="#aaff5f"/><rect x="32" y="172" width="10" height="10" rx="2" fill="#111111"/>
+          <rect x="32" y="145" width="1053.73" height="7" rx="3.5" fill="#aaff5f"/><rect x="32" y="172" width="10" height="10" rx="2" fill="#111111"/>
           <text x="53" y="185" font-size="18" font-weight="600">TypeScript</text>
           <text x="1168" y="185" font-size="17" text-anchor="end">3.5%</text>
           <rect x="32" y="199" width="1136" height="7" rx="3.5" fill="#e2e2e2"/>
-          <rect x="32" y="199" width="39.22" height="7" rx="3.5" fill="#111111"/><rect x="32" y="226" width="10" height="10" rx="2" fill="#575757"/>
+          <rect x="32" y="199" width="39.21" height="7" rx="3.5" fill="#111111"/><rect x="32" y="226" width="10" height="10" rx="2" fill="#575757"/>
           <text x="53" y="239" font-size="18" font-weight="600">JavaScript</text>
           <text x="1168" y="239" font-size="17" text-anchor="end">2.7%</text>
           <rect x="32" y="253" width="1136" height="7" rx="3.5" fill="#e2e2e2"/>
@@ -33,7 +33,7 @@
           <text x="53" y="401" font-size="18" font-weight="600">Python</text>
           <text x="1168" y="401" font-size="17" text-anchor="end">&lt;0.1%</text>
           <rect x="32" y="415" width="1136" height="7" rx="3.5" fill="#e2e2e2"/>
-          <rect x="32" y="415" width="0.98" height="7" rx="3.5" fill="#c5c5c5"/><rect x="32" y="442" width="10" height="10" rx="2" fill="#d8d8d8"/>
+          <rect x="32" y="415" width="1.02" height="7" rx="3.5" fill="#c5c5c5"/><rect x="32" y="442" width="10" height="10" rx="2" fill="#d8d8d8"/>
           <text x="53" y="455" font-size="18" font-weight="600">Other languages</text>
           <text x="1168" y="455" font-size="17" text-anchor="end">&lt;0.1%</text>
           <rect x="32" y="469" width="1136" height="7" rx="3.5" fill="#e2e2e2"/>
