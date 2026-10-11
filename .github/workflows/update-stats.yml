@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add -- assets/stats-mxlx.svg assets/stats.json
+          git add -- assets/stats-mxlx.svg assets/streaks-mxlx.svg assets/languages-mxlx.svg assets/stats.json
           if git diff --cached --quiet; then
             echo "Statistics are unchanged."
             exit 0

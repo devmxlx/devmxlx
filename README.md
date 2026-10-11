@@ -35,6 +35,7 @@ type Developer = {
   builds: readonly string[];
   coreStack: readonly string[];
   openTo: readonly string[];
+  spokenLanguages: readonly string[];
   portfolio: `https://${string}`;
 };
 
@@ -46,6 +47,7 @@ const milo = {
   builds: ["custom websites", "web apps", "full-stack products"],
   coreStack: ["TypeScript", "Next.js", "React", "Tailwind", "Supabase", "Vercel"],
   openTo: ["freelance projects", "collaborations"],
+  spokenLanguages: ["German", "English", "Russian"],
   portfolio: "https://mxlx.studio",
 } as const satisfies Developer;
 ```
@@ -182,10 +184,41 @@ This is an overview of the layers I work across; the details depend on the appli
 
 </details>
 
+### Contribution streaks
+
+<p>
+  <img src="./assets/streaks-mxlx.svg" alt="Current and longest contribution streaks, including private activity, since account creation" width="100%" />
+</p>
+
+### Most-used languages
+
+<p>
+  <img src="./assets/languages-mxlx.svg" alt="GitHub language distribution by code bytes across my public and private owned repositories" width="100%" />
+</p>
+
+<details>
+  <summary><strong>How streaks and languages are calculated</strong></summary>
+
+<br />
+
+- **Streaks:** consecutive calendar days with at least one GitHub contribution. Any eligible public or private contribution counts. The history starts at account creation, and a streak can continue across New Year.
+- **Current streak:** includes today when it has activity. If today is still empty, a streak ending yesterday remains current until the day ends in Europe/Berlin.
+- **Longest streak:** the longest consecutive run in that history. **Active days** counts all days with contributions, including days outside a streak.
+- **Languages:** GitHub's language-byte totals across my own public and private non-fork repositories. Percentages describe the detected code distribution; they do not measure work hours, proficiency or individual authorship. The six largest languages are shown individually; smaller ones are grouped when necessary.
+- All three statistics cards refresh together. Only aggregate numbers are published, with no private repository names, paths, commit messages or source files.
+
+</details>
+
 <a id="contact"></a>
 ## Let's build something.
 
 I'm open to **freelance projects and collaborations**, especially custom websites, web apps and work that connects design with full-stack development.
+
+We can talk in **German, English or Russian**.
+
+<p>
+  <img src="./assets/spoken-languages-mxlx.svg" alt="Languages I speak: Deutsch, English, Русский — German, English and Russian" width="100%" />
+</p>
 
 | Find me | Link |
 | :--- | :--- |

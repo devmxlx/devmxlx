@@ -66,7 +66,31 @@ def stack():
 </svg>'''
 
 
+def spoken_languages():
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="224" viewBox="0 0 1200 224" role="img" aria-labelledby="title desc">
+  <title id="title">Languages I speak</title><desc id="desc">German, English and Russian.</desc>
+  <rect width="1200" height="224" rx="18" fill="#f5f5f5"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#111111">
+    <text x="32" y="43" fill="#777777" font-size="16">/006</text>
+    <text x="87" y="43" font-size="22" font-weight="600" letter-spacing="-.7">Languages I speak.</text>
+    <text x="1009" y="43" fill="#777777" font-size="14">LET'S TALK</text>
+    {brand_mark(1133, 21, 32, '#111111')}
+    <path d="M32 68 H1168 M411 92 V193 M801 92 V193" stroke="#d8d8d8"/>
+    <text x="32" y="113" fill="#777777" font-size="14">01 / DE</text>
+    <text x="30" y="161" font-size="38" font-weight="600" letter-spacing="-1.4">Deutsch</text>
+    <text x="32" y="190" fill="#777777" font-size="16">German</text>
+    <text x="441" y="113" fill="#777777" font-size="14">02 / EN</text>
+    <text x="439" y="161" font-size="38" font-weight="600" letter-spacing="-1.4">English</text>
+    <text x="441" y="190" fill="#777777" font-size="16">English</text>
+    <text x="831" y="113" fill="#777777" font-size="14">03 / RU</text>
+    <text x="829" y="161" font-size="38" font-weight="600" letter-spacing="-1.4">Русский</text>
+    <text x="831" y="190" fill="#777777" font-size="16">Russian</text>
+  </g>
+</svg>'''
+
+
 if __name__ == "__main__":
-    for name, graphic in (("header-mxlx.svg", header()), ("stack-mxlx.svg", stack())):
+    for name, graphic in (("header-mxlx.svg", header()), ("stack-mxlx.svg", stack()),
+                          ("spoken-languages-mxlx.svg", spoken_languages())):
         (ROOT / "assets" / name).write_text(graphic + "\n", encoding="utf-8")
     print("Rendered mxlx.studio profile graphics.")

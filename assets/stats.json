@@ -1424,7 +1424,47 @@
   "commits": 1901,
   "commits_scope": "owned_nonfork_repositories_all_time",
   "contributions": 1863,
+  "languages": [
+    {
+      "name": "HTML",
+      "bytes": 328312847
+    },
+    {
+      "name": "TypeScript",
+      "bytes": 12218152
+    },
+    {
+      "name": "JavaScript",
+      "bytes": 9662187
+    },
+    {
+      "name": "CSS",
+      "bytes": 1812506
+    },
+    {
+      "name": "PLpgSQL",
+      "bytes": 1617711
+    },
+    {
+      "name": "Python",
+      "bytes": 306303
+    },
+    {
+      "name": "Shell",
+      "bytes": 2755
+    }
+  ],
   "private_commits": 1893,
+  "streaks": {
+    "active_days": 82,
+    "current": 5,
+    "current_end": "2026-10-11",
+    "current_start": "2026-10-07",
+    "longest": 21,
+    "longest_end": "2026-04-03",
+    "longest_start": "2026-03-14",
+    "since": "2024-07-23"
+  },
   "updated_on": "2026-10-11",
   "username": "devmxlx",
   "year": 2026

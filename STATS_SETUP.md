@@ -1,6 +1,6 @@
 # Profile statistics
 
-The SVG is generated from real GitHub API data. Only aggregate counts and contribution-calendar dates/counts are written to `assets/stats.json` and `assets/stats-mxlx.svg`. Neither private repository names nor credentials are published.
+The activity, streak and language SVGs are generated from real GitHub API data. Only aggregate counts, language-byte totals, streak lengths/date ranges and current-year contribution-calendar dates/counts are written to `assets/stats.json` and the SVGs. Neither private repository names nor credentials are published.
 
 ## Automatic refresh
 
@@ -19,6 +19,8 @@ The built-in `GITHUB_TOKEN` pushes the resulting files and is scoped to this pro
 - Private commits: the subset of those counts from repositories with `private: true`.
 - GitHub caches contributor counts for a few hours. Its attribution groups associated author emails by GitHub account; the API links only the first 500 distinct author emails in each repository. Large multi-author repositories can therefore have attribution limits.
 - Contributions: GitHub's contribution calendar from the start of the current year to the current time. The profile's private-contribution visibility setting controls anonymized private activity in this calendar.
+- Streaks: annual contribution-calendar queries from account creation to the current time are combined before calculating consecutive active days. A missing calendar day breaks a streak. The current streak ends today or yesterday, giving today a grace period until midnight in Europe/Berlin. The longest run and total active days cover the complete fetched account history, including private activity. Only the current-year calendar and derived streak aggregates are published.
+- Languages: `GET /repos/{owner}/{repo}/languages`, requiring metadata-read permission only. Sum each language's detected bytes across owned non-fork repositories, including private repositories. Display percentages against the full byte total; group languages below the top six as Other. This is repository code distribution, not the owner's personal contribution share, proficiency or time spent.
 - The two counts measure different things and are not added together.
 
 The updater uses Python's standard library, validates the token's account, handles repository/contributor pagination and empty repositories, and writes an explicit allowlist of fields. It never writes API tokens, repository lists, contributor identities, commit details or GraphQL response bodies. API failures preserve the previous snapshot.
@@ -30,5 +32,6 @@ The separate token has metadata-read access to current and future repositories o
 ## Sources
 
 - [GitHub repository contributor counts and metadata permissions](https://docs.github.com/en/rest/repos/repos#list-repository-contributors)
+- [GitHub language bytes and metadata permissions](https://docs.github.com/en/rest/repos/repos#list-repository-languages)
 - [GitHub contribution calendar](https://docs.github.com/en/graphql/reference/users#contributioncalendar)
 - [GitHub contribution criteria](https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference)
