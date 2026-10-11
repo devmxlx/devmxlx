@@ -355,11 +355,35 @@ def publish(data, root=ROOT):
     (root / "assets" / "stats.json").write_text(json.dumps(safe, indent=2) + "\n", encoding="utf-8")
 
 
+def apply_verified_commit_floor(data, baseline, now):
+    """Temporary aggregate lower bound for GitHub's delayed contributor cache."""
+    verified = datetime.fromisoformat(baseline["verified_at"])
+    expires = datetime.fromisoformat(baseline["expires_at"])
+    if verified.tzinfo is None or expires.tzinfo is None or not verified < expires:
+        raise ValueError("Invalid verified aggregate baseline dates")
+    if expires - verified > timedelta(days=2):
+        raise ValueError("Verified aggregate baseline may last at most two days")
+    for key in ("commits", "private_commits"):
+        if type(baseline[key]) is not int or baseline[key] < 0:
+            raise ValueError("Invalid verified aggregate baseline counts")
+    if baseline["private_commits"] > baseline["commits"]:
+        raise ValueError("Inconsistent verified aggregate baseline")
+    if verified <= now < expires:
+        data["commits"] = max(data["commits"], baseline["commits"])
+        data["private_commits"] = max(data["private_commits"], baseline["private_commits"])
+        data["commits"] = max(data["commits"], data["private_commits"])
+    return data
+
+
 def main():
     try:
         user = os.environ.get("STATS_USER", "devmxlx")
         data = collect(GitHub(os.environ.get("STATS_READ_TOKEN")), user,
                        datetime.now(timezone.utc), os.environ.get("STATS_HISTORY_START"))
+        baseline_path = ROOT / "stats-cache-baseline.json"
+        if baseline_path.exists():
+            data = apply_verified_commit_floor(data, json.loads(baseline_path.read_text()),
+                                               datetime.now(timezone.utc))
         publish(data)
         print(f"Published {data['commits']} all-time owned-repository commits and {data['contributions']} contributions for {data['year']}.")
         return 0

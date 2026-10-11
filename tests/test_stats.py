@@ -172,6 +172,26 @@ class StatsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'future'):
             stats.collect(FixtureClient(), 'devmxlx', NOW, '2026-10-12')
 
+    def test_verified_aggregate_floor_covers_cache_delay_and_expires(self):
+        baseline = {'commits':20064,'private_commits':20054,
+                    'verified_at':'2026-10-11T20:00:00+00:00','expires_at':'2026-10-13T20:00:00+00:00'}
+        data = stats.collect(FixtureClient(), 'devmxlx', NOW)
+        calendar = json.dumps(data['calendar'])
+        stats.apply_verified_commit_floor(data, baseline, NOW)
+        self.assertEqual((data['commits'], data['private_commits']), (20064, 20054))
+        self.assertEqual(json.dumps(data['calendar']),calendar)
+        live = {'commits':22000,'private_commits':21990}
+        self.assertEqual(stats.apply_verified_commit_floor(live,baseline,NOW),live)
+        stale = {'commits':65,'private_commits':62}
+        stats.apply_verified_commit_floor(stale,baseline,datetime(2026,10,14,tzinfo=timezone.utc))
+        self.assertEqual(stale,{'commits':65,'private_commits':62})
+
+    def test_invalid_verified_baseline_is_rejected(self):
+        baseline = {'commits':10,'private_commits':20,
+                    'verified_at':'2026-10-11T20:00:00+00:00','expires_at':'2026-10-13T20:00:00+00:00'}
+        with self.assertRaisesRegex(ValueError, 'Inconsistent'):
+            stats.apply_verified_commit_floor({},baseline,NOW)
+
 
 if __name__ == "__main__":
     unittest.main()

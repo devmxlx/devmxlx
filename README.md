@@ -181,6 +181,7 @@ This is an overview of the layers I work across; the details depend on the appli
 - **Private activity** is included in the aggregate values. Repository names, commit messages, source code and credentials are not part of the published statistics files.
 - GitHub caches contributor counts, which can lag recent commits by a few hours. The two counters have different scopes and are not added together. The graph includes synthetic, automated commits with backdated author dates; these do not represent development work performed on those dates.
 - The date on the card shows when the snapshot was generated. The updater is maintained in this profile repository.
+- During the contributor-cache delay after a large import, a temporary aggregate lower bound from verified Git history keeps the new commits included. It expires within two days. Contribution-calendar and streak values always come directly from GitHub.
 
 </details>
 
