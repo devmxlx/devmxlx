@@ -156,6 +156,22 @@ class StatsTests(unittest.TestCase):
         start = datetime.fromisoformat(variables["from"])
         self.assertLess(start, now)
 
+    def test_imported_history_before_account_creation_is_queried(self):
+        class HistoricalClient(FixtureClient):
+            def request(self, path, payload=None):
+                if path == '/graphql':
+                    self.queries.append(payload['variables'])
+                return super().request(path, payload)
+        client = HistoricalClient()
+        data = stats.collect(client, 'devmxlx', NOW, '2023-10-12')
+        self.assertEqual(len(client.queries), 4)
+        self.assertEqual(data['streaks']['since'], '2023-10-12')
+        self.assertTrue(all(datetime.fromisoformat(q['to']) <= NOW for q in client.queries))
+
+    def test_future_history_start_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'future'):
+            stats.collect(FixtureClient(), 'devmxlx', NOW, '2026-10-12')
+
 
 if __name__ == "__main__":
     unittest.main()

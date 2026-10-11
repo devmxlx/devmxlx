@@ -179,7 +179,7 @@ This is an overview of the layers I work across; the details depend on the appli
 - **Commits** are GitHub's contributor commit counts for my own non-fork repositories, across their full history. Only commits attributed to my account are summed. Public and private repositories are included; work in repositories owned by other accounts is outside this counter.
 - **Contributions** come from GitHub's contribution calendar for the displayed year. They can also include pull requests, issues, reviews and other eligible activity.
 - **Private activity** is included in the aggregate values. Repository names, commit messages, source code and credentials are not part of the published statistics files.
-- GitHub caches contributor counts, which can lag recent commits by a few hours. The two counters have different scopes and are not added together. The graph can include automated activity.
+- GitHub caches contributor counts, which can lag recent commits by a few hours. The two counters have different scopes and are not added together. The graph includes synthetic, automated commits with backdated author dates; these do not represent development work performed on those dates.
 - The date on the card shows when the snapshot was generated. The updater is maintained in this profile repository.
 
 </details>
@@ -187,7 +187,7 @@ This is an overview of the layers I work across; the details depend on the appli
 ### Contribution streaks
 
 <p>
-  <img src="./assets/streaks-mxlx.svg" alt="Current and longest contribution streaks, including private activity, since account creation" width="100%" />
+  <img src="./assets/streaks-mxlx.svg" alt="Current and longest contribution streaks, including private and automated activity, since October 2023" width="100%" />
 </p>
 
 ### Most-used languages
@@ -201,7 +201,7 @@ This is an overview of the layers I work across; the details depend on the appli
 
 <br />
 
-- **Streaks:** consecutive calendar days with at least one GitHub contribution. Any eligible public or private contribution counts. The history starts at account creation, and a streak can continue across New Year.
+- **Streaks:** consecutive calendar days with at least one GitHub contribution. Any eligible public or private contribution counts, including synthetic automated history. The queried history starts on 12 October 2023 to cover imported author dates before account creation; a streak can continue across New Year.
 - **Current streak:** includes today when it has activity. If today is still empty, a streak ending yesterday remains current until the day ends in Europe/Berlin.
 - **Longest streak:** the longest consecutive run in that history. **Active days** counts all days with contributions, including days outside a streak.
 - **Languages:** GitHub's language-byte totals across my own public and private non-fork repositories. Percentages describe the detected code distribution; they do not measure work hours, proficiency or individual authorship. The six largest languages are shown individually; smaller ones are grouped when necessary.

@@ -135,7 +135,7 @@ def calculate_streaks(days, today, since):
     }
 
 
-def collect(client, username, now):
+def collect(client, username, now, history_start=None):
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]{0,38}", username):
         raise ValueError("Invalid GitHub username")
     profile = client.request("/user")
@@ -153,6 +153,12 @@ def collect(client, username, now):
     today = now.astimezone(ZoneInfo("Europe/Berlin")).date()
     if since > today:
         raise ValueError("GitHub returned an invalid account creation date")
+    if history_start:
+        requested = date.fromisoformat(history_start)
+        if requested > today:
+            raise ValueError("The history start cannot be in the future")
+        # Imported Git history can have author dates before account creation.
+        since = min(since, requested)
     all_days = []
     for calendar_year in range(since.year, year + 1):
         start = datetime(calendar_year, 1, 1, tzinfo=ZoneInfo("Europe/Berlin"))
@@ -352,7 +358,8 @@ def publish(data, root=ROOT):
 def main():
     try:
         user = os.environ.get("STATS_USER", "devmxlx")
-        data = collect(GitHub(os.environ.get("STATS_READ_TOKEN")), user, datetime.now(timezone.utc))
+        data = collect(GitHub(os.environ.get("STATS_READ_TOKEN")), user,
+                       datetime.now(timezone.utc), os.environ.get("STATS_HISTORY_START"))
         publish(data)
         print(f"Published {data['commits']} all-time owned-repository commits and {data['contributions']} contributions for {data['year']}.")
         return 0
