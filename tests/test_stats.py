@@ -192,6 +192,32 @@ class StatsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Inconsistent'):
             stats.apply_verified_commit_floor({},baseline,NOW)
 
+    def test_source_snapshot_keeps_scan_date_and_drops_private_fields(self):
+        data=stats.collect(FixtureClient(),'devmxlx',NOW)
+        snapshot={'metric':'source_file_bytes','scanned_at':'2026-10-10T12:00:00+00:00',
+                  'imported_content_included':False,'file_count':2,'project_count':2,
+                  'private_project':'never-publish-source-name',
+                  'languages':[{'name':'TypeScript','bytes':100,'files':2,'code_lines':10,
+                                'private_file':'never-publish-source-path'}]}
+        stats.apply_source_language_snapshot(data,snapshot,NOW)
+        self.assertEqual(data['languages_updated_on'],'2026-10-10')
+        self.assertEqual(data['languages_scope'],'accessible_project_source_bytes')
+        with tempfile.TemporaryDirectory() as tmp:
+            stats.publish(data,Path(tmp))
+            text=''.join(p.read_text() for p in (Path(tmp)/'assets').iterdir())
+            self.assertNotIn('never-publish',text)
+            self.assertIn('2 files',text)
+
+    def test_source_snapshot_rejects_future_scan_and_inconsistent_totals(self):
+        snapshot={'metric':'source_file_bytes','scanned_at':'2026-10-12T12:00:00+00:00',
+                  'imported_content_included':False,'file_count':2,'project_count':1,
+                  'languages':[{'name':'Python','bytes':100,'files':1,'code_lines':10}]}
+        with self.assertRaisesRegex(ValueError,'timestamp'):
+            stats.apply_source_language_snapshot({},snapshot,NOW)
+        snapshot['scanned_at']='2026-10-10T12:00:00+00:00'
+        with self.assertRaisesRegex(ValueError,'file total'):
+            stats.apply_source_language_snapshot({},snapshot,NOW)
+
 
 if __name__ == "__main__":
     unittest.main()

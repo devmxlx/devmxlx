@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PUBLISHED_FIELDS = {"username", "year", "commits", "private_commits", "contributions", "updated_on", "calendar", "commits_scope", "languages", "streaks"}
+PUBLISHED_FIELDS = {"username", "year", "commits", "private_commits", "contributions", "updated_on", "calendar", "commits_scope", "languages", "streaks", "languages_scope", "languages_updated_on", "languages_file_count", "languages_project_count", "languages_imported_content_included"}
 STREAK_FIELDS = {"current", "longest", "active_days", "current_start", "current_end", "longest_start", "longest_end", "since"}
 LEVELS = {"NONE": 0, "FIRST_QUARTILE": 1, "SECOND_QUARTILE": 2, "THIRD_QUARTILE": 3, "FOURTH_QUARTILE": 4}
 
@@ -206,6 +206,11 @@ def collect(client, username, now, history_start=None):
         "calendar": days,
         "streaks": calculate_streaks(all_days, today, since.isoformat()),
         "languages": client.owned_languages(username),
+        "languages_scope": "github_repository_code_bytes",
+        "languages_updated_on": today.isoformat(),
+        "languages_file_count": None,
+        "languages_project_count": None,
+        "languages_imported_content_included": None,
     }
 
 
@@ -332,19 +337,27 @@ def render_languages(data):
     if not displayed:
         rows.append('<text x="32" y="139" fill="#666666" font-size="18">No language bytes reported by GitHub yet.</text>')
     height = 165 + max(1, len(displayed)) * 54
-    body = f'''<text x="32" y="94" fill="#777777" font-size="14">Share of GitHub-detected code bytes · owned non-fork repositories</text>
+    source_snapshot = data.get('languages_scope') == 'accessible_project_source_bytes'
+    subtitle = (f"Source-file bytes · {data['languages_file_count']:,} files · {data['languages_project_count']} accessible projects"
+                if source_snapshot else "Share of GitHub-detected code bytes · owned non-fork repositories")
+    excluded = "Dependencies, build output and duplicates excluded" if data.get('languages_imported_content_included') else "Dependencies, build output, duplicates and imported learning pages excluded"
+    footnote = (excluded + " · Aggregate values only"
+                if source_snapshot else "Code distribution, not time spent · Aggregate public + private values · No repository names")
+    body = f'''<text x="32" y="94" fill="#777777" font-size="14">{escape(subtitle)}</text>
        {''.join(rows)}
        <path d="M32 {height - 41} H1168" stroke="#d8d8d8"/>
-       <text x="32" y="{height - 17}" fill="#777777" font-size="12">Code distribution, not time spent · Aggregate public + private values · No repository names</text>'''
+       <text x="32" y="{height - 17}" fill="#777777" font-size="12">{escape(footnote)}</text>'''
     description = "; ".join(f"{item['name']}: {item['bytes'] / total * 100:.1f}%" for item in displayed) if total else "No language bytes reported."
-    return card("Most-used languages", "005", description, body, height, data["updated_on"])
+    return card("Most-used languages", "005", description, body, height,
+                data.get('languages_updated_on',data['updated_on']))
 
 
 def publish(data, root=ROOT):
     # Explicit schema boundary: no unexpected API fields reach public files.
     safe = {key: data[key] for key in sorted(PUBLISHED_FIELDS)}
     safe["calendar"] = [{key: day[key] for key in ("date", "count", "level")} for day in safe["calendar"]]
-    safe["languages"] = [{key: item[key] for key in ("name", "bytes")} for item in safe["languages"]]
+    safe["languages"] = [{key:item[key] for key in ("name","bytes","files","code_lines") if key in item}
+                         for item in safe["languages"]]
     safe["streaks"] = {key: safe["streaks"][key] for key in sorted(STREAK_FIELDS)}
     (root / "assets").mkdir(exist_ok=True)
     # Render everything before writing so API/schema/render errors keep the previous snapshot.
@@ -375,6 +388,36 @@ def apply_verified_commit_floor(data, baseline, now):
     return data
 
 
+def apply_source_language_snapshot(data, snapshot, now):
+    """Keep a locally measured source snapshot independent of the cloud refresh date."""
+    scanned = datetime.fromisoformat(snapshot['scanned_at'])
+    if scanned.tzinfo is None or scanned > now:
+        raise ValueError('Invalid source scan timestamp')
+    if snapshot.get('metric') != 'source_file_bytes' or type(snapshot.get('imported_content_included')) is not bool:
+        raise ValueError('Unexpected source scan methodology')
+    if any(type(snapshot[k]) is not int or snapshot[k] <= 0 for k in ('file_count','project_count')):
+        raise ValueError('Invalid source scan coverage')
+    entries = []
+    seen = set()
+    for item in snapshot['languages']:
+        name = item['name']
+        if not isinstance(name,str) or not name or name in seen or len(name)>80:
+            raise ValueError('Invalid source scan language')
+        if any(type(item[k]) is not int or item[k] < 0 for k in ('bytes','files','code_lines')):
+            raise ValueError('Invalid source scan language counts')
+        seen.add(name)
+        entries.append({k:item[k] for k in ('name','bytes','files','code_lines')})
+    if sum(item['files'] for item in entries) != snapshot['file_count']:
+        raise ValueError('Source scan file total does not match')
+    data['languages'] = sorted(entries,key=lambda item:(-item['bytes'],item['name']))
+    data['languages_scope'] = 'accessible_project_source_bytes'
+    data['languages_updated_on'] = scanned.astimezone(ZoneInfo('Europe/Berlin')).date().isoformat()
+    data['languages_file_count'] = snapshot['file_count']
+    data['languages_project_count'] = snapshot['project_count']
+    data['languages_imported_content_included'] = snapshot['imported_content_included']
+    return data
+
+
 def main():
     try:
         user = os.environ.get("STATS_USER", "devmxlx")
@@ -384,6 +427,10 @@ def main():
         if baseline_path.exists():
             data = apply_verified_commit_floor(data, json.loads(baseline_path.read_text()),
                                                datetime.now(timezone.utc))
+        source_path = ROOT / 'assets' / 'language-source-snapshot.json'
+        if source_path.exists():
+            data = apply_source_language_snapshot(data,json.loads(source_path.read_text()),
+                                                   datetime.now(timezone.utc))
         publish(data)
         print(f"Published {data['commits']} all-time owned-repository commits and {data['contributions']} contributions for {data['year']}.")
         return 0

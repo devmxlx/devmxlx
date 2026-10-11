@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "metric": "source_file_bytes",
+  "tool": "scc 4.1.0",
+  "scanned_at": "2026-10-11T22:00:23+00:00",
+  "project_count": 12,
+  "file_count": 2739,
+  "code_lines": 468734,
+  "imported_content_included": false,
+  "languages": [
+    {
+      "name": "TypeScript",
+      "bytes": 13070856,
+      "files": 1912,
+      "code_lines": 267835
+    },
+    {
+      "name": "JavaScript",
+      "bytes": 6542673,
+      "files": 398,
+      "code_lines": 93423
+    },
+    {
+      "name": "CSS",
+      "bytes": 2008408,
+      "files": 100,
+      "code_lines": 55539
+    },
+    {
+      "name": "HTML",
+      "bytes": 1868209,
+      "files": 48,
+      "code_lines": 24736
+    },
+    {
+      "name": "SQL",
+      "bytes": 1477067,
+      "files": 244,
+      "code_lines": 22682
+    },
+    {
+      "name": "Python",
+      "bytes": 319820,
+      "files": 31,
+      "code_lines": 4211
+    },
+    {
+      "name": "Shell",
+      "bytes": 6353,
+      "files": 2,
+      "code_lines": 110
+    },
+    {
+      "name": "Kotlin",
+      "bytes": 3668,
+      "files": 2,
+      "code_lines": 70
+    },
+    {
+      "name": "Batch",
+      "bytes": 3093,
+      "files": 1,
+      "code_lines": 74
+    },
+    {
+      "name": "Swift",
+      "bytes": 2228,
+      "files": 1,
+      "code_lines": 54
+    }
+  ]
+}

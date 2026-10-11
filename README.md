@@ -194,7 +194,7 @@ This is an overview of the layers I work across; the details depend on the appli
 ### Most-used languages
 
 <p>
-  <img src="./assets/languages-mxlx.svg" alt="GitHub language distribution by code bytes across my public and private owned repositories" width="100%" />
+  <img src="./assets/languages-mxlx.svg" alt="Language distribution from source files across accessible public, private and local projects" width="100%" />
 </p>
 
 <details>
@@ -205,8 +205,9 @@ This is an overview of the layers I work across; the details depend on the appli
 - **Streaks:** consecutive calendar days with at least one GitHub contribution. Any eligible public or private contribution counts, including synthetic automated history. The queried history starts on 12 October 2023 to cover imported author dates before account creation; a streak can continue across New Year.
 - **Current streak:** includes today when it has activity. If today is still empty, a streak ending yesterday remains current until the day ends in Europe/Berlin.
 - **Longest streak:** the longest consecutive run in that history. **Active days** counts all days with contributions, including days outside a streak.
-- **Languages:** GitHub's language-byte totals across my own public and private non-fork repositories. Percentages describe the detected code distribution; they do not measure work hours, proficiency or individual authorship. The six largest languages are shown individually; smaller ones are grouped when necessary.
-- All three statistics cards refresh together. Only aggregate numbers are published, with no private repository names, paths, commit messages or source files.
+- **Languages:** a measured source-file snapshot across accessible public, private and local projects, including projects that are not hosted on GitHub. Files are classified with scc; percentages use source-file bytes. Dependency folders, native SDK dependencies, build output, generated/minified files, exact duplicates and imported HTML learning pages are excluded. TypeScript includes TSX, JavaScript includes JSX, and SQL files are shown as SQL. Comments-only files are excluded. Percentages do not measure work hours, proficiency or individual authorship.
+- **Language scan date:** the date on this card is the actual local scan date. GitHub Actions preserves the last full source snapshot; it cannot scan projects that only exist on a powered-off computer. A new local scan updates those projects. Commits, contributions and streaks continue to refresh automatically four times daily.
+- Only aggregate numbers are published, with no private repository names, paths, commit messages or source files. The six largest languages are shown individually; smaller ones are grouped when necessary.
 
 </details>
 
