@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="410" viewBox="0 0 1200 410" role="img" aria-labelledby="title desc">
+  <title id="title">Milo — full-stack developer from Germany</title>
+  <desc id="desc">I design, build and ship custom websites and web apps. From idea to live product.</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#263333" stroke-width=".6"/></pattern>
+    <linearGradient id="fade"><stop stop-color="#80ed99" stop-opacity=".12"/><stop offset="1" stop-color="#0d1117" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1200" height="410" rx="18" fill="#0d1117"/>
+  <rect x="650" width="550" height="410" fill="url(#grid)"/>
+  <rect x="650" width="550" height="410" fill="url(#fade)"/>
+  <rect x="1" y="1" width="1198" height="408" rx="17" fill="none" stroke="#28363b"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <circle cx="59" cy="49" r="5" fill="#80ed99"/>
+    <text x="75" y="54" fill="#a4b9b0" font-size="15" letter-spacing="3">DEVMXLX / FULL-STACK DEVELOPER</text>
+    <text x="53" y="171" fill="#e6edf3" font-size="100" font-weight="800" letter-spacing="-5">MILO<tspan fill="#80ed99">.</tspan></text>
+    <text x="57" y="222" fill="#d2e2d9" font-size="29">From idea to live product.</text>
+    <text x="57" y="260" fill="#90a4a1" font-size="19">Custom websites, web apps &amp; the infrastructure behind them.</text>
+    <path d="M57 304 H650" stroke="#28363b"/>
+    <text x="57" y="345" fill="#80ed99" font-size="15" letter-spacing="2">DESIGN</text>
+    <text x="159" y="345" fill="#90a4a1" font-size="15">/</text>
+    <text x="187" y="345" fill="#80ed99" font-size="15" letter-spacing="2">BUILD</text>
+    <text x="275" y="345" fill="#90a4a1" font-size="15">/</text>
+    <text x="303" y="345" fill="#80ed99" font-size="15" letter-spacing="2">SHIP</text>
+    <text x="536" y="345" fill="#90a4a1" font-size="15">GERMANY · CET/CEST</text>
+  </g>
+  <g transform="translate(778 96)" font-family="monospace" font-size="17">
+    <rect width="350" height="216" rx="12" fill="#10191e" stroke="#35483f"/>
+    <path d="M0 38 H350" stroke="#28363b"/>
+    <circle cx="21" cy="19" r="4" fill="#607d71"/><circle cx="37" cy="19" r="4" fill="#607d71"/><circle cx="53" cy="19" r="4" fill="#80ed99"/>
+    <text x="200" y="24" fill="#90a4a1" font-size="12">profile.ts</text>
+    <text x="22" y="77" fill="#90a4a1">const developer = {</text>
+    <text x="40" y="109" fill="#a4b9b0">name: <tspan fill="#80ed99">"Milo"</tspan>,</text>
+    <text x="40" y="141" fill="#a4b9b0">focus: <tspan fill="#80ed99">"full-stack"</tspan>,</text>
+    <text x="40" y="173" fill="#a4b9b0">mindset: <tspan fill="#80ed99">"ship &amp; learn"</tspan></text>
+    <text x="22" y="200" fill="#90a4a1">};</text>
+  </g>
+</svg>

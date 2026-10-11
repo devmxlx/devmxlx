@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="228" viewBox="0 0 1200 228" role="img" aria-labelledby="title desc">
+  <title id="title">My core stack</title>
+  <desc id="desc">TypeScript, Next.js, React, Tailwind CSS, Supabase and Vercel.</desc>
+  <rect x="1" y="1" width="1198" height="226" rx="16" fill="#0d1117" stroke="#28363b"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="32" y="44" fill="#a4b9b0" font-size="14" letter-spacing="3">THE STACK I BUILD WITH</text>
+    <g fill="#10191e" stroke="#28363b">
+      <rect x="32" y="68" width="176" height="128" rx="10"/><rect x="224" y="68" width="176" height="128" rx="10"/>
+      <rect x="416" y="68" width="176" height="128" rx="10"/><rect x="608" y="68" width="176" height="128" rx="10"/>
+      <rect x="800" y="68" width="176" height="128" rx="10"/><rect x="992" y="68" width="176" height="128" rx="10"/>
+    </g>
+    <g fill="#80ed99" font-size="30" font-weight="700" font-family="monospace">
+      <text x="49" y="112">TS</text><text x="241" y="112">N/</text><text x="433" y="112">{ }</text>
+      <text x="625" y="112">~</text><text x="817" y="112">DB</text><text x="1009" y="112">&gt;_</text>
+    </g>
+    <g fill="#e6edf3" font-size="20" font-weight="700">
+      <text x="49" y="148">TypeScript</text><text x="241" y="148">Next.js</text><text x="433" y="148">React</text>
+      <text x="625" y="148">Tailwind CSS</text><text x="817" y="148">Supabase</text><text x="1009" y="148">Vercel</text>
+    </g>
+    <g fill="#90a4a1" font-size="14">
+      <text x="49" y="173">Typed foundations</text><text x="241" y="173">Application layer</text><text x="433" y="173">Interfaces &amp; state</text>
+      <text x="625" y="173">Design &amp; styling</text><text x="817" y="173">Data &amp; backend</text><text x="1009" y="173">Deployment</text>
+    </g>
+  </g>
+</svg>

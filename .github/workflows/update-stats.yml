@@ -1,0 +1,45 @@
+name: Update private-inclusive profile stats
+
+on:
+  schedule:
+    - cron: '7 11,15,19,23 * * *'
+      timezone: Europe/Berlin
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-stats
+  cancel-in-progress: false
+
+jobs:
+  update:
+    # Enable after a separate read-only token has been configured.
+    if: ${{ vars.PRIVATE_STATS_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Fetch aggregate data and render SVG
+        env:
+          STATS_READ_TOKEN: ${{ secrets.STATS_READ_TOKEN }}
+          STATS_USER: ${{ github.repository_owner }}
+        run: python3 scripts/update_stats.py
+      - name: Publish changed statistics
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- assets/stats.svg assets/stats.json
+          if git diff --cached --quiet; then
+            echo "Statistics are unchanged."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -c commit.gpgsign=false commit -m 'Refresh aggregate GitHub profile statistics'
+          git push origin "HEAD:refs/heads/$DEFAULT_BRANCH"
