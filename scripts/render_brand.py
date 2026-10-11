@@ -67,6 +67,6 @@ def stack():
 
 
 if __name__ == "__main__":
-    for name, graphic in (("header.svg", header()), ("stack.svg", stack())):
+    for name, graphic in (("header-mxlx.svg", header()), ("stack-mxlx.svg", stack())):
         (ROOT / "assets" / name).write_text(graphic + "\n", encoding="utf-8")
     print("Rendered mxlx.studio profile graphics.")

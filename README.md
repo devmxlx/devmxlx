@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/header.svg?v=mxlx-studio-20261011" alt="Milo Kopper — developer and founder of Mxlx. Design meets code. mxlx.studio." width="100%" />
+  <img src="./assets/header-mxlx.svg" alt="Milo Kopper — developer and founder of Mxlx. Design meets code. mxlx.studio." width="100%" />
 </p>
 
 <p align="center">
@@ -62,7 +62,7 @@ const milo = {
 ## My toolkit
 
 <p>
-  <img src="./assets/stack.svg?v=mxlx-studio-20261011" alt="Core stack: TypeScript, Next.js, React, Tailwind CSS, Supabase and Vercel" width="100%" />
+  <img src="./assets/stack-mxlx.svg" alt="Core stack: TypeScript, Next.js, React, Tailwind CSS, Supabase and Vercel" width="100%" />
 </p>
 
 | Layer | My core tools | How I use them |
@@ -165,7 +165,7 @@ This is an overview of the layers I work across; the details depend on the appli
 
 <p>
   <a href="https://github.com/devmxlx?tab=overview">
-    <img src="./assets/stats.svg?v=mxlx-studio-20261011" alt="Milo's GitHub commits and contributions, including private activity" width="100%" />
+    <img src="./assets/stats-mxlx.svg" alt="Milo's GitHub commits and contributions, including private activity" width="100%" />
   </a>
 </p>
 

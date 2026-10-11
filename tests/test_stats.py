@@ -98,7 +98,7 @@ class StatsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             stats.publish(data, root)
-            svg = (root / "assets" / "stats.svg").read_text()
+            svg = (root / "assets" / "stats-mxlx.svg").read_text()
             public_json = (root / "assets" / "stats.json").read_text()
             ET.fromstring(svg)
             self.assertNotIn("never-publish", svg + public_json)

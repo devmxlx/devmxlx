@@ -2,7 +2,7 @@
 
 The header, toolkit and activity graphics follow the public visual language of [mxlx.studio](https://mxlx.studio): light gray surfaces, black typography, compact section numbers, a pixel asterisk and lime green accents.
 
-`python3 scripts/render_brand.py` rebuilds `header.svg` and `stack.svg`. The statistics renderer lives in `scripts/update_stats.py`. SVGs have accessible titles and descriptions, use native vector text/shapes and require no external font or statistics service.
+`python3 scripts/render_brand.py` rebuilds `header-mxlx.svg` and `stack-mxlx.svg`. The statistics renderer lives in `scripts/update_stats.py`. SVGs have accessible titles and descriptions, use native vector text/shapes and require no external font or statistics service.
 
 The obsidian graphic and original asterisk PNG were taken from the owner's agency website for the owner's GitHub profile:
 

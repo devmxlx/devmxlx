@@ -201,7 +201,7 @@ def publish(data, root=ROOT):
     safe["calendar"] = [{key: day[key] for key in ("date", "count", "level")} for day in safe["calendar"]]
     (root / "assets").mkdir(exist_ok=True)
     svg = render(safe)
-    (root / "assets" / "stats.svg").write_text(svg + "\n", encoding="utf-8")
+    (root / "assets" / "stats-mxlx.svg").write_text(svg + "\n", encoding="utf-8")
     (root / "assets" / "stats.json").write_text(json.dumps(safe, indent=2) + "\n", encoding="utf-8")
 
 

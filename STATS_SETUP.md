@@ -1,6 +1,6 @@
 # Profile statistics
 
-The SVG is generated from real GitHub API data. Only aggregate counts and contribution-calendar dates/counts are written to `assets/stats.json` and `assets/stats.svg`. Neither private repository names nor credentials are published.
+The SVG is generated from real GitHub API data. Only aggregate counts and contribution-calendar dates/counts are written to `assets/stats.json` and `assets/stats-mxlx.svg`. Neither private repository names nor credentials are published.
 
 ## Automatic refresh
 
